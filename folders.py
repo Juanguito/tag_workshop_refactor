@@ -1,29 +1,30 @@
-import os
-import shutil
-
+import os_manager
 
 class Folders():
+    def __init__(self):
+        self.folder_manager = os_manager.OsManager()
+
     def retrieve_mp3_files(self, path):
         return set(
-            entry for entry in os.scandir(path)
+            entry for entry in self.folder_manager.get_entities(path)
             if entry.is_file() and entry.name.endswith('.mp3')
         )
 
     def copy_file(self, source, destination, file_name):
-        if not os.path.exists(source):
+        if not self.folder_manager.exists(source):
             return None
 
-        if not os.path.exists(destination):
-            os.mkdir(destination)
+        if not self.folder_manager.exists(destination):
+            self.folder_manager.create_dir(destination)
 
-        destination_file_path = os.path.join(
+        destination_file_path = self.folder_manager.join(
                 destination,
                 file_name,
             )
 
-        newPath = shutil.copy(source, destination_file_path)
+        newPath = self.folder_manager.copy(source, destination_file_path)
 
         return newPath
 
     def join(self, path_1, path_2):
-        return os.path.join(path_1, path_2)
+        return self.folder_manager.join(path_1, path_2)
